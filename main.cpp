@@ -1,126 +1,9 @@
-#include <iostream>
-#include<algorithm>
-#include<fstream>
-#include <cmath>
+#include "bruteForce.h"
+#include "Pmaco.h"
 
 
 using namespace std;
-/**
- * Graph representation
- */
-class Graph{
-public:
-    Graph(string s);
-    Graph(bool aut);
-    void printGraph();
-    void bruteForceAlgorithm();
-    double getBruteForceTime();
-    void antColonyAlgorithm(int antsAmount,int travelAmount);
-    double getAntColonyAlgorithmTime(int antsAmount, int travelsAmount);
-    void geneticAlgorithm();
-    double getGeneticAlgorithmTime();
-    void dynamicProgrammingAlgorithm(); // not a heuristic
-    double getDynamicProgrammingAlgorithm();
-
-private:
-    int vertices;
-    int** graph;
-    int firstVertex;
-};
-Graph::Graph(string s) {
-    fstream file;
-    file.open(s,ios::in);
-    if(file.good()){
-//        reading graph details
-        file>>this->firstVertex;
-        file>>this->vertices;
-        graph=new int*[vertices];
-        for (int i = 0; i < vertices; ++i) {
-            graph[i]=new int[vertices];
-        }
-//      reading graph representation and writing it to matrix
-        for (int i = 0; i < vertices; ++i) {
-            for (int j = 0; j < vertices; ++j) {
-                file>>graph[i][j];
-            }
-        }
-    }
-    file.close();
-
-}
-Graph::Graph( bool aut){
-    cout<<"Vertices: ";
-    cin>>vertices;
-    graph= new int*[vertices];
-    for(int i=0;i<vertices;++i)
-        graph[i]=new int[vertices];
-    srand(time(NULL));
-    for (int j = 0; j < vertices; ++j) {
-        for (int i = 0; i < vertices; ++i) {
-            if(j==i)
-                graph[i][j]=0;
-            else if(j>i){
-                graph[j][i]=graph[i][j];
-            }
-            else{
-                graph[j][i]= rand()%(vertices*10) +1;
-            }
-
-        }
-    }
-    firstVertex=rand()%vertices;
-}
-void Graph::bruteForceAlgorithm() {
-    int sequence[vertices-1];
-    int i=0;
-    int permutationAmount=0;
-    int bestWay[vertices];
-    bestWay[0]=firstVertex;
-    int bestCost=0;
-    for (int j = 0,i=0; j < vertices-1; ++j,++i) {
-     if(i==firstVertex){
-         j--;
-         continue;
-     }
-        sequence[j]=i;
-    }
-//    loop which checks every next permutation of possible result
-    do{
-        permutationAmount++;
-        int cost=graph[firstVertex][sequence[0]];
-        if(cost==0) continue;
-        for (int i = 0; i < vertices-2; ++i) {
-            if(graph[sequence[i]][sequence[i+1]]==0){
-                cost=0;
-                break;
-            }
-            cost+=graph[sequence[i]][sequence[i+1]];
-        }
-        cost+=graph[sequence[vertices-2]][firstVertex];
-        if(cost<=bestCost||bestCost==0) {
-            bestCost = cost;
-//            rewriting sequence
-            for (int j = 0; j < vertices-1; ++j) {
-                bestWay[j+1]=sequence[j];
-            }
-        }
-    }while(next_permutation(sequence,sequence+vertices-1));
-    cout<<"Checked "<<permutationAmount<<" permutations"<<endl;
-    for (int k = 0; k < vertices; ++k) {
-        cout<<bestWay[k];
-    }
-    cout<<endl<<"Best cost: "<<bestCost;
-}
-double Graph::getBruteForceTime() {
-    time_t time=clock();
-    bruteForceAlgorithm();
-    return (clock()-time)/(double)CLOCKS_PER_SEC;
-}
-
-/**
- * Algorithm random path depending on factors between every two vertices that mark best solution.
- * @parm antsAmount number of algorithm's iterations
- */
+/*
 void Graph::antColonyAlgorithm(int antsAmount, int travelAmount) {
     int alphaValue = 3; // how important pheromone is
     int betaValue =2;
@@ -236,27 +119,18 @@ void Graph::antColonyAlgorithm(int antsAmount, int travelAmount) {
     cout<<endl;
     cout<<"cost: "<<bestCost<<endl;
 }//end of AntsColonyAlgorithm
-double Graph::getAntColonyAlgorithmTime(int antsAmount, int travelsAmount) {
-    clock_t time = clock();
-    antColonyAlgorithm(antsAmount,travelsAmount);
-    return (clock()-time)/(double)(CLOCKS_PER_SEC);
-    
-}
+*/
+
 int main() {
-    //Graph g = Graph("graph.txt");
-    Graph g=Graph(false);
-   // g.printGraph();
-    cout<<endl<<"Brute force time: "<<g.getBruteForceTime()<<endl;
-    cout<<"Ants Colony Time: "<<g.getAntColonyAlgorithmTime(3,1000);
+    Graph* g = new Graph();
+    g->printGraph();
+    bruteForce* alg = new bruteForce(g);
+    alg->runAlgorithm();
+    alg->printResult();
+    int best = alg->getBestCost();
+    Algorithms *alg2 = new Pmaco(g);
+    alg2->runAlgorithm();
+    alg2->printResult();
+    cout<<"Przybliżenie wynosi: "<<alg2->getBestCost()/(double)best;
     return 0;
-}
-
-void Graph::printGraph() {
-    for (int i = 0; i < vertices; ++i) {
-        for (int j = 0; j < vertices; ++j) {
-            cout<<graph[i][j]<<" ";
-        }
-        cout<<endl;
-    }
-
 }
