@@ -125,12 +125,15 @@ int main() {
     Graph* g = new Graph();
     g->printGraph();
     bruteForce* alg = new bruteForce(g);
-    alg->runAlgorithm();
-    alg->printResult();
-    int best = alg->getBestCost();
+    //alg->runAlgorithm();
+    //alg->printResult();
+    //int best = alg->getBestCost();
     Algorithms *alg2 = new Pmaco(g);
+    ((Pmaco*)alg2)->classicAnts();
+    alg2->printResult();
+    //cout<<"Przybliżenie wynosi: "<<alg2->getBestCost()/(double)best<<endl;
     alg2->runAlgorithm();
     alg2->printResult();
-    cout<<"Przybliżenie wynosi: "<<alg2->getBestCost()/(double)best;
+    //cout<<"Przybliżenie wynosi: "<<alg2->getBestCost()/(double)best;
     return 0;
 }

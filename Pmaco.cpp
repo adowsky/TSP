@@ -1,7 +1,5 @@
 #include "Pmaco.h"
 #include <cmath>
-#include <time.h>
-#include <stdlib.h>
 
 Pmaco::Pmaco(Graph *g) {
     graph=g;
@@ -176,12 +174,24 @@ void Pmaco::runAlgorithm(int travelsAmount) {
         generateNormalAntsRoutes(i);
         double currentHybridFactor = HYBRID_POPULATION_FACTOR_MIN + (i/(double)travelsAmount)*
                                                                             (HYBRID_POPULATION_FACTOR_MAX-HYBRID_POPULATION_FACTOR_MIN);
+        if((int)(graph->getVertices()*currentHybridFactor) % 2 ==1)
+            currentHybridFactor--;
         if(graph->getVertices() * currentHybridFactor >2)
             mutation(currentHybridFactor*graph->getVertices());
             //generateMutatedAntsRoutes();
         globalPheromonesUpdate();
     }
     algorithmTime = (clock() - timer) / (double) CLOCKS_PER_SEC;
+}
+void Pmaco::classicAnts() {
+    clock_t timer = clock();
+    initialize();
+    for (int i = 0; i < graph->getVertices()*graph->getVertices(); ++i) {
+        generateNormalAntsRoutes(i);
+        globalPheromonesUpdate();
+    }
+    algorithmTime = (clock() - timer) / (double) CLOCKS_PER_SEC;
+
 }
 
 void Pmaco::runAlgorithm() {
@@ -196,7 +206,11 @@ void Pmaco::deltaUpdate(int *route) {
     }
     }
     void Pmaco::mutation(int currentPopulationAmount){
-        for (int i = 0; i < currentPopulationAmount -1 ; i+=2) { // for every ant
+
+        for (int i = 0; i < currentPopulationAmount; i+=2) { // for every ant
+            if(currentPopulationAmount>=4){
+                int z=0;
+            }
             int firstCost = 0;
             int secondCost = 0;
             int vertices = graph->getVertices();
@@ -340,9 +354,9 @@ void Pmaco::deltaUpdate(int *route) {
             if(secondCost<bestCost){
                 setBestWay(hybridAntsPopulation[i+1],secondCost);
             }
-            for (int n = 0; n < currentPopulationAmount; ++n) {
-                deltaUpdate(hybridAntsPopulation[n]);
-            }
+        }
+        for (int n = 0; n < currentPopulationAmount; ++n) {
+            deltaUpdate(hybridAntsPopulation[n]);
         }
     }
 

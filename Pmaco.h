@@ -12,6 +12,8 @@ public:
 
     void printResult();
 
+    void classicAnts ();
+
 private:
     Graph *graph;
     int **normalAntsPopulation;
@@ -44,5 +46,4 @@ private:
     void globalPheromonesUpdate();
     void mutation(int currentPopulationAmount);
 };
-
 #endif //TSP_PMACO_H
