@@ -1,7 +1,3 @@
-//
-// Created by ado on 30.10.15.
-//
-
 #ifndef TSP_BRUTEFORCE_H
 #define TSP_BRUTEFORCE_H
 

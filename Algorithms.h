@@ -1,7 +1,3 @@
-//
-// Created by ado on 30.10.15.
-//
-
 #ifndef TSP_ALGORITHMS_H
 #define TSP_ALGORITHMS_H
 

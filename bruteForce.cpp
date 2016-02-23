@@ -1,4 +1,3 @@
-
 #include "bruteForce.h"
 #include <algorithm>
 

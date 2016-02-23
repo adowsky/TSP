@@ -1,7 +1,3 @@
-//
-// Created by ado on 30.10.15.
-//
-
 #include "Algorithms.h"
 
 double Algorithms::getTime() { return algorithmTime; }
